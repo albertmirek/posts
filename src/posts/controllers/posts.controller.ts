@@ -2,23 +2,45 @@ import {
   Body,
   Controller,
   Get,
-  Post,
+  HttpException,
+  HttpStatus, Param, ParseIntPipe,
+  Post, UsePipes,
 } from '@nestjs/common';
 import { PostService } from '../post.service';
 import { Post as PostInterface } from '../interfaces/post.interface';
-import { CreatePostDto } from '../dto/create-post.dto';
+import { CreatePostDto, createPostSchema } from '../dto/create-post.dto';
+import { ZodValidationPipe } from '../../helpers/zodValidationPipeline';
 
-@Controller('post')
-export class PostController {
+@Controller('posts')
+export class PostsController {
   constructor(private postService: PostService) {}
 
   @Post()
+  @UsePipes(new ZodValidationPipe(createPostSchema))
   async create(@Body() createPostDto: CreatePostDto) {
     this.postService.create(createPostDto);
   }
 
   @Get()
-  async getAll(): Promise<PostInterface[]> {
-    return this.postService.findAll();
+  async findAll(): Promise<PostInterface[]> {
+    try {
+      return await this.postService.findAll();
+    } catch (error) {
+      throw new HttpException(
+        {
+          status: HttpStatus.FORBIDDEN,
+          error: 'This is a custom message',
+        },
+        HttpStatus.FORBIDDEN,
+        {
+          cause: error,
+        },
+      );
+    }
+  }
+
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.postService.findOne(id);
   }
 }
