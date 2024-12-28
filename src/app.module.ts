@@ -3,9 +3,11 @@ import { PostsModule } from './posts/posts.module';
 import { CommentsModule } from './comments/comments.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { PostsController } from './posts/controllers/posts.controller';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
-  imports: [PostsModule, CommentsModule],
+  imports: [PostsModule, CommentsModule, AuthModule, UsersModule],
   controllers: [],
   providers: [],
 })
