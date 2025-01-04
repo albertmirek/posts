@@ -16,7 +16,7 @@ import { AuthGuard } from '../../../common/guards/auth.guard';
 export class PostsController {
   constructor(private postService: PostService) {}
 
-  @UseGuards(AuthGuard)
+  //@UseGuards(AuthGuard) //TODO commented due to dev reasons
   @Post()
   @UsePipes(new ZodValidationPipe(createPostSchema))
   async create(@Body() createPostDto: CreatePostDto) {

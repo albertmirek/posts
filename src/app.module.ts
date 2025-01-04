@@ -8,6 +8,7 @@ import { UsersModule } from './modules/users/users.module';
 import * as fs from 'node:fs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { Post } from './modules/posts/entities/post.entity';
 
 const configPath = process.env.CONFIG_PATH || './config.dev.json';
 const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
@@ -27,7 +28,8 @@ const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
       password: config.DB_PASSWORD,
       database: config.DB_NAME,
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: config.ENV === 'DEV',
+      entities: [Post],
     }),
   ],
   controllers: [],
