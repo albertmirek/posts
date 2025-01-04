@@ -1,10 +1,10 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { PostsModule } from './posts/posts.module';
-import { CommentsModule } from './comments/comments.module';
+import { PostsModule } from './modules/posts/posts.module';
+import { CommentsModule } from './modules/comments/comments.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
-import { PostsController } from './posts/controllers/posts.controller';
-import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
+import { PostsController } from './modules/posts/controllers/posts.controller';
+import { AuthModule } from './modules/auth/auth.module';
+import { UsersModule } from './modules/users/users.module';
 import * as fs from 'node:fs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';

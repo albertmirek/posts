@@ -4,21 +4,24 @@ import {
   Get,
   HttpException,
   HttpStatus, Param, ParseIntPipe,
-  Post, UsePipes,
+  Post, UseGuards, UsePipes,
 } from '@nestjs/common';
 import { PostService } from '../post.service';
 import { Post as PostInterface } from '../interfaces/post.interface';
 import { CreatePostDto, createPostSchema } from '../dto/create-post.dto';
-import { ZodValidationPipe } from '../../helpers/zodValidationPipeline';
+import { ZodValidationPipe } from '../../../common/pipes/zodValidationPipeline';
+import { AuthGuard } from '../../../common/guards/auth.guard';
 
 @Controller('posts')
 export class PostsController {
   constructor(private postService: PostService) {}
 
+  @UseGuards(AuthGuard)
   @Post()
   @UsePipes(new ZodValidationPipe(createPostSchema))
   async create(@Body() createPostDto: CreatePostDto) {
-    this.postService.create(createPostDto);
+    //this.postService.create(createPostDto);//TODO
+    return;
   }
 
   @Get()
