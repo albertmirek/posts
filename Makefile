@@ -1,0 +1,18 @@
+.PHONY: all up down clean logs
+
+all: up
+
+up:
+	@docker-compose up -d
+
+down:
+	@docker-compose down
+
+clean:
+	@docker-compose down -v
+
+logs:
+	@docker-compose logs -f
+
+start-local:
+	@CONFIG_PATH=./config/config.dev.json yarn start:dev
