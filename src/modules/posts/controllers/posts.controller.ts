@@ -3,12 +3,14 @@ import {
   Controller,
   Get,
   HttpException,
-  HttpStatus, Param, ParseIntPipe,
-  Post, UseGuards, UsePipes,
+  HttpStatus,
+  Post,
+  UseGuards,
+  UsePipes,
 } from '@nestjs/common';
 import { PostService } from '../post.service';
-import { Post as PostInterface } from '../interfaces/post.interface';
-import { CreatePostDto, createPostSchema } from '../dto/create-post.dto';
+import { Post as PostEntity } from '../entities/post.entity';
+import { CreatePostDto, createPostSchema, GetPostDto } from '../dto/post.dto';
 import { ZodValidationPipe } from '../../../common/pipes/zodValidationPipeline';
 import { AuthGuard } from '../../../common/guards/auth.guard';
 
@@ -20,16 +22,33 @@ export class PostsController {
   @Post()
   @UsePipes(new ZodValidationPipe(createPostSchema))
   async create(@Body() createPostDto: CreatePostDto) {
-    //this.postService.create(createPostDto);//TODO
-    return;
+    try {
+      return this.postService.create(createPostDto);
+    } catch (e) {
+      throw new Error(e);
+    }
   }
 
   @Get()
-  async findAll(): Promise<PostInterface[]> {
+  async findAll(): Promise<GetPostDto[]> {
     try {
-      return await this.postService.findAll();
+      const posts: GetPostDto[] = (await this.postService.findAll()).map(
+        (post) => {
+          return {
+            authorId: post.authorId,
+            authorName: post.author.userName,
+            title: post.title,
+            body: post.body,
+            createdAt: post.createdAt,
+            comments: post.comments,
+          };
+        },
+      );
+
+      return posts;
     } catch (error) {
-      throw new HttpException(
+      throw new Error(error);
+      /*throw new HttpException(
         {
           status: HttpStatus.FORBIDDEN,
           error: 'This is a custom message',
@@ -38,12 +57,12 @@ export class PostsController {
         {
           cause: error,
         },
-      );
+      );*/
     }
   }
 
-  @Get(':id')
+  /*  @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return this.postService.findOne(id);
-  }
+  }*/
 }
