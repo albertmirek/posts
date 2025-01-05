@@ -1,4 +1,4 @@
-.PHONY: all up down clean logs
+.PHONY: all up down clean logs schema
 
 all: up
 
@@ -16,3 +16,7 @@ logs:
 
 start-local:
 	@CONFIG_PATH=./config/config.dev.json yarn start:dev
+
+schema:
+	@CONFIG_PATH=./config/config.dev.json npm run typeorm schema:log > schema.sql
+
