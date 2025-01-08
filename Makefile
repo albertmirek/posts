@@ -20,3 +20,12 @@ start-local:
 schema:
 	@CONFIG_PATH=./config/config.dev.json npm run typeorm schema:log > schema.sql
 
+generate-schema:
+	yarn workspace app run generate:openapi
+
+generate-types: generate-schema
+	yarn workspace types run generate-types
+
+build: generate-types
+	cd types && yarn pack
+

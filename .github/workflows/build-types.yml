@@ -1,0 +1,45 @@
+name: Build and Publish Types Package
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-types:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'yarn'
+
+      # Install dependencies
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      # Generate OpenAPI schema
+      - name: Generate OpenAPI schema
+        run: yarn generate:openapi
+
+      # Generate TypeScript types
+      - name: Generate types from schema
+        run: yarn generate:types
+
+      # Pack the types package
+      - name: Pack types package
+        run: yarn pack:types
+
+      # Publish to npm (optional)
+      - name: Publish to npm
+        if: github.ref == 'refs/heads/main'
+        run: npm publish --access public ./types
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
